@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="GameVault Maskable">
+  <rect width="512" height="512" fill="#111827"/>
+  <rect x="56" y="56" width="400" height="400" rx="88" fill="#1f2937"/>
+  <path d="M136 220c0-22 18-40 40-40h160c22 0 40 18 40 40v72c0 22-18 40-40 40H176c-22 0-40-18-40-40v-72z" fill="#111827" stroke="#93c5fd" stroke-width="16"/>
+  <circle cx="212" cy="256" r="18" fill="#93c5fd"/>
+  <rect x="256" y="238" width="76" height="14" rx="7" fill="#93c5fd"/>
+  <rect x="256" y="264" width="52" height="14" rx="7" fill="#93c5fd"/>
+</svg>
