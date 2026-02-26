@@ -16,7 +16,8 @@ export default defineConfig({
         theme_color: '#1f2937',
         background_color: '#111827',
         display: 'standalone',
-        start_url: '/',
+		scope: "/Game-Vault/",
+        start_url: "/Game-Vault/",
         icons: [
           { src: 'icons/icon.svg', sizes: 'any', type: 'image/svg+xml' },
           { src: 'icons/maskable.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'maskable' }
