@@ -11,12 +11,15 @@ interface Props { games: Game[]; dlc: DLC[]; tags: Tag[]; reload: () => Promise<
 
 export const GameDetailPage: React.FC<Props> = ({ games, dlc, tags, reload }) => {
   const { id } = useParams();
+  const isCreate = !id || id === 'new';
   const navigate = useNavigate();
   const { pushToast } = useToast();
   const [showDlcForm, setShowDlcForm] = useState(false);
-  const game = useMemo(() => games.find((g) => g.id === id), [games, id]);
+  const game = useMemo(() => {
+    if (isCreate) return undefined;
+    return games.find((g) => g.id === id);
+  }, [games, id, isCreate]);
 
-  if (!id) return <p>Missing game id.</p>;
 
   const saveGame = async (payload: Pick<Game, 'title' | 'platforms' | 'tagIds' | 'customFields'>) => {
     const now = Date.now();
@@ -26,7 +29,7 @@ export const GameDetailPage: React.FC<Props> = ({ games, dlc, tags, reload }) =>
     await repository.saveGame(record);
     await reload();
     pushToast('Game saved', 'success');
-    if (!game) navigate(`/game/${record.id}`);
+    if (isCreate) navigate(`/game/${record.id}`);
   };
 
   const deleteGame = async () => {

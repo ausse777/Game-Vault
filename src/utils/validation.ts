@@ -30,5 +30,5 @@ export const validateBackup = (payload: unknown): { ok: boolean; message?: strin
   if (!payload.dlc.every(looksLikeDlc)) return { ok: false, message: 'One or more DLC items are invalid.' };
   if (!payload.tags.every(looksLikeTag)) return { ok: false, message: 'One or more tags are invalid.' };
 
-  return { ok: true, data: payload as BackupPayload };
+  return { ok: true, data: payload as unknown as BackupPayload };
 };
