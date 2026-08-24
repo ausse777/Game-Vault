@@ -30,7 +30,9 @@ export const CustomFieldEditor: React.FC<Props> = ({ fields, onChange }) => {
   return (
     <div>
       {fields.map((field, idx) => (
-        <div className="field-card" key={`${field.key}-${idx}`}>
+        // Field names are editable, so they cannot be used as React keys without
+        // remounting the input and interrupting mobile keyboards on every change.
+        <div className="field-card" key={idx}>
           <input placeholder="Field name" value={field.key} onChange={(e) => update(idx, { key: e.target.value })} />
           <select value={field.type} onChange={(e) => update(idx, { type: e.target.value as CustomFieldType, value: '' })}>
             {typeOptions.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
