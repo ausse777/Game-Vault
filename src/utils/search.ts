@@ -43,7 +43,7 @@ export const filterGames = (
 
     const dlcMatches = (dlcByGameId[game.id] ?? []).filter((item) => {
       const dlcTagMatch = selectedTagIds.length === 0 || selectedTagIds.every((id) => item.tagIds.includes(id));
-      const dlcBlob = buildSearchBlob(item.title, [], item.tagIds, tagsById, item.customFields);
+      const dlcBlob = buildSearchBlob(item.title, item.platforms ?? [], item.tagIds, tagsById, item.customFields);
       const queryMatch = !lowerQuery || dlcBlob.includes(lowerQuery);
       return dlcTagMatch && queryMatch;
     });

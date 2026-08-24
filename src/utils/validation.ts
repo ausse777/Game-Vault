@@ -1,4 +1,4 @@
-import type { BackupPayload, CustomField, DLC, Game, Tag } from '../models/types';
+import type { BackupPayload, CustomField, DLC, Game, Platform, Tag } from '../models/types';
 
 export const validateTitle = (value: string): string | null => {
   if (!value.trim()) return 'Title is required.';
@@ -25,10 +25,14 @@ export const validateBackup = (payload: unknown): { ok: boolean; message?: strin
   const looksLikeGame = (g: unknown): g is Game => isObject(g) && typeof g.id === 'string' && typeof g.title === 'string';
   const looksLikeDlc = (d: unknown): d is DLC => isObject(d) && typeof d.id === 'string' && typeof d.gameId === 'string';
   const looksLikeTag = (t: unknown): t is Tag => isObject(t) && typeof t.id === 'string' && typeof t.name === 'string';
+  const looksLikePlatform = (p: unknown): p is Platform => isObject(p) && typeof p.id === 'string' && typeof p.name === 'string';
 
   if (!payload.games.every(looksLikeGame)) return { ok: false, message: 'One or more games are invalid.' };
   if (!payload.dlc.every(looksLikeDlc)) return { ok: false, message: 'One or more DLC items are invalid.' };
   if (!payload.tags.every(looksLikeTag)) return { ok: false, message: 'One or more tags are invalid.' };
+  if (payload.platforms !== undefined && (!Array.isArray(payload.platforms) || !payload.platforms.every(looksLikePlatform))) {
+    return { ok: false, message: 'One or more platforms are invalid.' };
+  }
 
   return { ok: true, data: payload as unknown as BackupPayload };
 };

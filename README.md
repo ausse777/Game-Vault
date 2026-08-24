@@ -12,11 +12,13 @@ GameVault is a local-first Progressive Web App for managing games + DLC with tag
 - React + TypeScript + Vite + PWA service worker
 - Dexie + IndexedDB persistence (no backend / no cloud)
 - Library with game detail + DLC detail flows
+- Reusable recent-platform selector for games and DLC
+- Editable date-added values for games and DLC
 - Per-item typed custom fields: text, number, boolean, date, choice
 - Tag CRUD + multi-select filtering
 - Include-DLC toggle for search/filter with matched DLC indicators
 - Sort options: A→Z, Z→A, newest, oldest
-- Import/export backup JSON with merge/replace modes and validation
+- Readable library export plus full backup/import JSON with merge/replace modes and validation
 - Toast notifications and mobile-first UI
 
 ## Project structure

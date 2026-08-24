@@ -4,12 +4,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { DlcForm } from '../components/DlcForm';
 import { GameForm } from '../components/GameForm';
 import { repository } from '../db/repository';
-import type { DLC, Game, Tag } from '../models/types';
+import type { DLC, Game, Platform, Tag } from '../models/types';
 import { useToast } from '../context/ToastContext';
 
-interface Props { games: Game[]; dlc: DLC[]; tags: Tag[]; reload: () => Promise<void>; }
+interface Props { games: Game[]; dlc: DLC[]; tags: Tag[]; platforms: Platform[]; reload: () => Promise<void>; }
 
-export const GameDetailPage: React.FC<Props> = ({ games, dlc, tags, reload }) => {
+export const GameDetailPage: React.FC<Props> = ({ games, dlc, tags, platforms, reload }) => {
   const { id } = useParams();
   const isCreate = !id || id === 'new';
   const navigate = useNavigate();
@@ -21,11 +21,11 @@ export const GameDetailPage: React.FC<Props> = ({ games, dlc, tags, reload }) =>
   }, [games, id, isCreate]);
 
 
-  const saveGame = async (payload: Pick<Game, 'title' | 'platforms' | 'tagIds' | 'customFields'>) => {
+  const saveGame = async (payload: Pick<Game, 'title' | 'platforms' | 'tagIds' | 'customFields' | 'dateAdded'>) => {
     const now = Date.now();
     const record: Game = game
       ? { ...game, ...payload, updatedAt: now }
-      : { id: uuidv4(), ...payload, dateAdded: now, updatedAt: now };
+      : { id: uuidv4(), ...payload, updatedAt: now };
     await repository.saveGame(record);
     await reload();
     pushToast('Game saved', 'success');
@@ -40,10 +40,10 @@ export const GameDetailPage: React.FC<Props> = ({ games, dlc, tags, reload }) =>
     navigate('/');
   };
 
-  const saveDlc = async (payload: Pick<DLC, 'title' | 'tagIds' | 'customFields'>) => {
+  const saveDlc = async (payload: Pick<DLC, 'title' | 'platforms' | 'tagIds' | 'customFields' | 'dateAdded'>) => {
     if (!game) return;
     const now = Date.now();
-    const entry: DLC = { id: uuidv4(), gameId: game.id, ...payload, dateAdded: now, updatedAt: now };
+    const entry: DLC = { id: uuidv4(), gameId: game.id, ...payload, updatedAt: now };
     await repository.saveDlc(entry);
     await reload();
     setShowDlcForm(false);
@@ -56,15 +56,15 @@ export const GameDetailPage: React.FC<Props> = ({ games, dlc, tags, reload }) =>
     <div className="stack">
       <Link to="/">← Back to library</Link>
       <h2>{game ? `Edit ${game.title}` : 'Create game'}</h2>
-      <GameForm initial={game} tags={tags} onSubmit={saveGame} />
+      <GameForm initial={game} tags={tags} platforms={platforms} onSubmit={saveGame} />
       {game && <button className="danger" onClick={deleteGame}>Delete game</button>}
 
       {game && (
         <section className="stack">
           <h3>DLC</h3>
           <button onClick={() => setShowDlcForm((v) => !v)}>{showDlcForm ? 'Cancel' : 'Add DLC'}</button>
-          {showDlcForm && <DlcForm tags={tags} onSubmit={saveDlc} />}
-          {gameDlc.map((item) => <Link key={item.id} to={`/game/${game.id}/dlc/${item.id}`} className="card-link"><article className="card"><h4>{item.title}</h4></article></Link>)}
+          {showDlcForm && <DlcForm tags={tags} platforms={platforms} onSubmit={saveDlc} />}
+          {gameDlc.map((item) => <Link key={item.id} to={`/game/${game.id}/dlc/${item.id}`} className="card-link"><article className="card"><h4>{item.title}</h4><p>{item.platforms.join(', ') || 'No platforms selected'}</p><small>Added: {new Date(item.dateAdded).toLocaleDateString()}</small></article></Link>)}
         </section>
       )}
     </div>

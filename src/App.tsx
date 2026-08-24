@@ -5,13 +5,14 @@ import { GameDetailPage } from './pages/GameDetailPage';
 import { DlcDetailPage } from './pages/DlcDetailPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { repository } from './db/repository';
-import type { DLC, Game, SortOption, Tag } from './models/types';
+import type { DLC, Game, Platform, SortOption, Tag } from './models/types';
 import { filterGames } from './utils/search';
 
 export default function App() {
   const [games, setGames] = useState<Game[]>([]);
   const [dlc, setDlc] = useState<DLC[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
+  const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [query, setQuery] = useState('');
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
   const [includeDlc, setIncludeDlc] = useState(false);
@@ -22,6 +23,7 @@ export default function App() {
     setGames(data.games);
     setDlc(data.dlc);
     setTags(data.tags.sort((a, b) => a.name.localeCompare(b.name)));
+    setPlatforms(data.platforms.sort((a, b) => b.lastUsedAt - a.lastUsedAt || a.name.localeCompare(b.name)));
   };
 
   useEffect(() => { void reload(); }, []);
@@ -31,6 +33,9 @@ export default function App() {
     acc[item.gameId] = [...(acc[item.gameId] ?? []), item];
     return acc;
   }, {}), [dlc]);
+  const dlcCountByGameId = useMemo(() => Object.fromEntries(
+    Object.entries(dlcByGameId).map(([gameId, items]) => [gameId, items.length])
+  ), [dlcByGameId]);
 
   const { results, matchedDlc } = useMemo(() => filterGames(games, {
     query,
@@ -49,11 +54,11 @@ export default function App() {
       </header>
       <main>
         <Routes>
-          <Route path="/" element={<LibraryPage games={results} tags={tags} matchedDlc={matchedDlc} query={query} onQuery={setQuery} selectedTags={selectedTagIds} onSelectedTags={setSelectedTagIds} includeDlc={includeDlc} onIncludeDlc={setIncludeDlc} sort={sort} onSort={setSort} />} />
-          <Route path="/game/new" element={<GameDetailPage games={games} dlc={dlc} tags={tags} reload={reload} />} />
-          <Route path="/game/:id" element={<GameDetailPage games={games} dlc={dlc} tags={tags} reload={reload} />} />
-          <Route path="/game/:id/dlc/:dlcId" element={<DlcDetailPage dlc={dlc} tags={tags} reload={reload} />} />
-          <Route path="/settings" element={<SettingsPage tags={tags} reload={reload} />} />
+          <Route path="/" element={<LibraryPage games={results} tags={tags} matchedDlc={matchedDlc} dlcCountByGameId={dlcCountByGameId} query={query} onQuery={setQuery} selectedTags={selectedTagIds} onSelectedTags={setSelectedTagIds} includeDlc={includeDlc} onIncludeDlc={setIncludeDlc} sort={sort} onSort={setSort} />} />
+          <Route path="/game/new" element={<GameDetailPage games={games} dlc={dlc} tags={tags} platforms={platforms} reload={reload} />} />
+          <Route path="/game/:id" element={<GameDetailPage games={games} dlc={dlc} tags={tags} platforms={platforms} reload={reload} />} />
+          <Route path="/game/:id/dlc/:dlcId" element={<DlcDetailPage dlc={dlc} tags={tags} platforms={platforms} reload={reload} />} />
+          <Route path="/settings" element={<SettingsPage tags={tags} platforms={platforms} reload={reload} />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

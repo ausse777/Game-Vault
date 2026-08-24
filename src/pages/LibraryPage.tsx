@@ -6,6 +6,7 @@ interface Props {
   games: Game[];
   tags: Tag[];
   matchedDlc: Record<string, DLC[]>;
+  dlcCountByGameId: Record<string, number>;
   query: string;
   onQuery: (v: string) => void;
   selectedTags: string[];
@@ -16,7 +17,7 @@ interface Props {
   onSort: (v: SortOption) => void;
 }
 
-export const LibraryPage: React.FC<Props> = ({ games, tags, matchedDlc, query, onQuery, selectedTags, onSelectedTags, includeDlc, onIncludeDlc, sort, onSort }) => {
+export const LibraryPage: React.FC<Props> = ({ games, tags, matchedDlc, dlcCountByGameId, query, onQuery, selectedTags, onSelectedTags, includeDlc, onIncludeDlc, sort, onSort }) => {
   const toggleTag = (id: string) => onSelectedTags(selectedTags.includes(id) ? selectedTags.filter((x) => x !== id) : [...selectedTags, id]);
 
   return (
@@ -39,7 +40,7 @@ export const LibraryPage: React.FC<Props> = ({ games, tags, matchedDlc, query, o
               <article className="card">
                 <h3>{game.title}</h3>
                 <p>{game.platforms.join(', ') || 'No platforms yet'}</p>
-                <p>DLC count: {(matchedDlc[game.id]?.length ?? 0) || 'View details'}</p>
+                <p>DLC count: {dlcCountByGameId[game.id] ?? 0}</p>
                 <small>Added: {new Date(game.dateAdded).toLocaleDateString()}</small>
                 {matchedDlc[game.id]?.length ? <div className="match">Matched DLC: {matchedDlc[game.id].map((d) => d.title).join(', ')}</div> : null}
               </article>

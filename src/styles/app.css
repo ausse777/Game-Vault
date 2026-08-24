@@ -15,6 +15,9 @@ button:hover { opacity: .95; }
 .chip-row { display: flex; gap: .5rem; flex-wrap: wrap; }
 .chip { border-radius: 999px; }
 .chip.active { background: #2563eb; }
+.platform-selector { display: grid; gap: .35rem; }
+.icon-button { display: inline-flex; align-items: center; justify-content: center; width: 42px; padding: .5rem; border-radius: 999px; }
+.helper-text { color: #9ca3af; margin: 0; }
 .card-grid { display: grid; gap: .8rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 .card { border: 1px solid #374151; border-radius: .75rem; padding: .8rem; background: #1f2937; }
 .card-link { text-decoration: none; color: inherit; }
@@ -24,6 +27,7 @@ button:hover { opacity: .95; }
 .empty-state { border: 1px dashed #6b7280; padding: 1rem; border-radius: .75rem; }
 .button-link { display: inline-block; padding: .6rem .9rem; border: 1px solid #374151; border-radius: .5rem; text-decoration: none; background: #1f2937; }
 .row { display: flex; justify-content: space-between; gap: .5rem; align-items: center; border-bottom: 1px solid #374151; padding-bottom: .4rem; }
+.row > span:last-child { display: flex; gap: .4rem; }
 .toast-region { position: fixed; right: 1rem; bottom: 1rem; display: grid; gap: .5rem; z-index: 20; }
 .toast { padding: .6rem .8rem; border-radius: .5rem; background: #374151; }
 .toast.success { background: #14532d; }
@@ -32,4 +36,6 @@ button:hover { opacity: .95; }
   .app-shell { padding: .8rem; }
   .topbar { align-items: flex-start; }
   .topbar nav { width: 100%; justify-content: space-between; }
+  .row { align-items: flex-start; }
+  .row > span:last-child { flex-wrap: wrap; justify-content: flex-end; }
 }
