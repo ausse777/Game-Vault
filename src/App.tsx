@@ -4,6 +4,7 @@ import { LibraryPage } from './pages/LibraryPage';
 import { GameDetailPage } from './pages/GameDetailPage';
 import { DlcDetailPage } from './pages/DlcDetailPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { JumpToTopButton } from './components/JumpToTopButton';
 import { repository } from './db/repository';
 import type { DLC, Game, Platform, SortOption, Tag } from './models/types';
 import { filterGames } from './utils/search';
@@ -14,6 +15,7 @@ export default function App() {
   const [tags, setTags] = useState<Tag[]>([]);
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [query, setQuery] = useState('');
+  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
   const [includeDlc, setIncludeDlc] = useState(false);
   const [sort, setSort] = useState<SortOption>('newest');
@@ -39,12 +41,13 @@ export default function App() {
 
   const { results, matchedDlc } = useMemo(() => filterGames(games, {
     query,
+    selectedPlatforms,
     selectedTagIds,
     includeDlc,
     sort,
     tagsById,
     dlcByGameId
-  }), [games, query, selectedTagIds, includeDlc, sort, tagsById, dlcByGameId]);
+  }), [games, query, selectedPlatforms, selectedTagIds, includeDlc, sort, tagsById, dlcByGameId]);
 
   return (
     <div className="app-shell">
@@ -54,7 +57,7 @@ export default function App() {
       </header>
       <main>
         <Routes>
-          <Route path="/" element={<LibraryPage games={results} tags={tags} matchedDlc={matchedDlc} dlcCountByGameId={dlcCountByGameId} query={query} onQuery={setQuery} selectedTags={selectedTagIds} onSelectedTags={setSelectedTagIds} includeDlc={includeDlc} onIncludeDlc={setIncludeDlc} sort={sort} onSort={setSort} />} />
+          <Route path="/" element={<LibraryPage games={results} tags={tags} platforms={platforms} matchedDlc={matchedDlc} dlcCountByGameId={dlcCountByGameId} query={query} onQuery={setQuery} selectedPlatforms={selectedPlatforms} onSelectedPlatforms={setSelectedPlatforms} selectedTags={selectedTagIds} onSelectedTags={setSelectedTagIds} includeDlc={includeDlc} onIncludeDlc={setIncludeDlc} sort={sort} onSort={setSort} />} />
           <Route path="/game/new" element={<GameDetailPage games={games} dlc={dlc} tags={tags} platforms={platforms} reload={reload} />} />
           <Route path="/game/:id" element={<GameDetailPage games={games} dlc={dlc} tags={tags} platforms={platforms} reload={reload} />} />
           <Route path="/game/:id/dlc/:dlcId" element={<DlcDetailPage dlc={dlc} tags={tags} platforms={platforms} reload={reload} />} />
@@ -62,6 +65,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+      <JumpToTopButton />
     </div>
   );
 }

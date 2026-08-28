@@ -2,6 +2,7 @@ import type { DLC, Game, SortOption, Tag } from '../models/types';
 
 interface SearchOptions {
   query: string;
+  selectedPlatforms: string[];
   selectedTagIds: string[];
   includeDlc: boolean;
   sort: SortOption;
@@ -29,23 +30,30 @@ export const filterGames = (
   games: Game[],
   options: SearchOptions
 ): { results: Game[]; matchedDlc: Record<string, DLC[]> } => {
-  const { query, selectedTagIds, includeDlc, tagsById, dlcByGameId, sort } = options;
+  const { query, selectedPlatforms, selectedTagIds, includeDlc, tagsById, dlcByGameId, sort } = options;
   const lowerQuery = query.trim().toLowerCase();
   const matchedDlc: Record<string, DLC[]> = {};
 
+  const matchesSelectedPlatforms = (platforms: string[]) => selectedPlatforms.length === 0
+    || selectedPlatforms.every((selected) => platforms.some(
+      (platform) => platform.localeCompare(selected, undefined, { sensitivity: 'accent' }) === 0
+    ));
+
   const filtered = games.filter((game) => {
+    const matchesPlatforms = matchesSelectedPlatforms(game.platforms);
     const matchesTags = selectedTagIds.length === 0 || selectedTagIds.every((id) => game.tagIds.includes(id));
     const gameBlob = buildSearchBlob(game.title, game.platforms, game.tagIds, tagsById, game.customFields);
     const matchesQuery = !lowerQuery || gameBlob.includes(lowerQuery);
 
-    if (matchesTags && matchesQuery) return true;
+    if (matchesPlatforms && matchesTags && matchesQuery) return true;
     if (!includeDlc) return false;
 
     const dlcMatches = (dlcByGameId[game.id] ?? []).filter((item) => {
+      const dlcPlatformMatch = matchesSelectedPlatforms(item.platforms ?? []);
       const dlcTagMatch = selectedTagIds.length === 0 || selectedTagIds.every((id) => item.tagIds.includes(id));
       const dlcBlob = buildSearchBlob(item.title, item.platforms ?? [], item.tagIds, tagsById, item.customFields);
       const queryMatch = !lowerQuery || dlcBlob.includes(lowerQuery);
-      return dlcTagMatch && queryMatch;
+      return dlcPlatformMatch && dlcTagMatch && queryMatch;
     });
 
     if (dlcMatches.length > 0) {

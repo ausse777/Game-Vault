@@ -1,14 +1,18 @@
 import { Link } from 'react-router-dom';
-import type { DLC, Game, SortOption, Tag } from '../models/types';
+import type { DLC, Game, Platform, SortOption, Tag } from '../models/types';
+import { PlatformSelector } from '../components/PlatformSelector';
 import { TagChips } from '../components/TagChips';
 
 interface Props {
   games: Game[];
   tags: Tag[];
+  platforms: Platform[];
   matchedDlc: Record<string, DLC[]>;
   dlcCountByGameId: Record<string, number>;
   query: string;
   onQuery: (v: string) => void;
+  selectedPlatforms: string[];
+  onSelectedPlatforms: (v: string[]) => void;
   selectedTags: string[];
   onSelectedTags: (v: string[]) => void;
   includeDlc: boolean;
@@ -17,7 +21,10 @@ interface Props {
   onSort: (v: SortOption) => void;
 }
 
-export const LibraryPage: React.FC<Props> = ({ games, tags, matchedDlc, dlcCountByGameId, query, onQuery, selectedTags, onSelectedTags, includeDlc, onIncludeDlc, sort, onSort }) => {
+export const LibraryPage: React.FC<Props> = ({ games, tags, platforms, matchedDlc, dlcCountByGameId, query, onQuery, selectedPlatforms, onSelectedPlatforms, selectedTags, onSelectedTags, includeDlc, onIncludeDlc, sort, onSort }) => {
+  const togglePlatform = (name: string) => onSelectedPlatforms(selectedPlatforms.includes(name)
+    ? selectedPlatforms.filter((platform) => platform !== name)
+    : [...selectedPlatforms, name]);
   const toggleTag = (id: string) => onSelectedTags(selectedTags.includes(id) ? selectedTags.filter((x) => x !== id) : [...selectedTags, id]);
 
   return (
@@ -30,7 +37,14 @@ export const LibraryPage: React.FC<Props> = ({ games, tags, matchedDlc, dlcCount
         </select>
       </div>
       <label className="toggle"><input type="checkbox" checked={includeDlc} onChange={(e) => onIncludeDlc(e.target.checked)} /> Include DLC in search & filters</label>
-      <TagChips selected={selectedTags} tags={tags} onToggle={toggleTag} />
+      <div className="filter-group">
+        <p>Platforms</p>
+        <PlatformSelector selected={selectedPlatforms} platforms={platforms} onToggle={togglePlatform} />
+      </div>
+      <div className="filter-group">
+        <p>Tags</p>
+        <TagChips selected={selectedTags} tags={tags} onToggle={toggleTag} />
+      </div>
       {games.length === 0 ? (
         <div className="empty-state"><p>No games found.</p><Link to="/game/new" className="button-link">Add your first game</Link></div>
       ) : (

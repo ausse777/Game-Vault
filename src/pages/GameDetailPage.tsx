@@ -56,7 +56,7 @@ export const GameDetailPage: React.FC<Props> = ({ games, dlc, tags, platforms, r
     <div className="stack">
       <Link to="/">← Back to library</Link>
       <h2>{game ? `Edit ${game.title}` : 'Create game'}</h2>
-      <GameForm initial={game} tags={tags} platforms={platforms} onSubmit={saveGame} />
+      <GameForm key={isCreate ? 'new' : game?.id ?? `loading-${id}`} initial={game} tags={tags} platforms={platforms} onSubmit={saveGame} />
       {game && <button className="danger" onClick={deleteGame}>Delete game</button>}
 
       {game && (

@@ -43,7 +43,10 @@ export const DlcForm: React.FC<Props> = ({ initial, tags, platforms, onSubmit })
       <label>DLC Title<input value={title} onChange={(e) => setTitle(e.target.value)} /></label>
       <div><p>Platforms</p><PlatformSelector selected={selectedPlatforms} platforms={platforms} onToggle={togglePlatform} /></div>
       <div><p>Tags</p><TagChips selected={tagIds} tags={tags} onToggle={(id) => setTagIds((prev) => prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id])} /></div>
-      <div><p>Custom fields</p><CustomFieldEditor fields={customFields} onChange={setCustomFields} /></div>
+      <details className="collapsible-section">
+        <summary>Custom fields <span className="summary-count">{customFields.length}</span></summary>
+        <div className="collapsible-content"><CustomFieldEditor fields={customFields} onChange={setCustomFields} /></div>
+      </details>
       <label>Date added<input type="date" value={dateAdded} onChange={(event) => setDateAdded(event.target.value)} required /></label>
       {error && <p className="error-text">{error}</p>}
       <button type="submit">Save DLC</button>

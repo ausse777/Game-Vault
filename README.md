@@ -15,7 +15,8 @@ GameVault is a local-first Progressive Web App for managing games + DLC with tag
 - Reusable recent-platform selector for games and DLC
 - Editable date-added values for games and DLC
 - Per-item typed custom fields: text, number, boolean, date, choice
-- Tag CRUD + multi-select filtering
+- Platform and tag CRUD + multi-select filtering
+- Collapsible custom-field editors and a floating jump-to-top control
 - Include-DLC toggle for search/filter with matched DLC indicators
 - Sort options: A→Z, Z→A, newest, oldest
 - Readable library export plus full backup/import JSON with merge/replace modes and validation
